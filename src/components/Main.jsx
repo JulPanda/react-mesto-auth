@@ -12,8 +12,7 @@ function Main(props) {
         <img
           src={currentUser.avatar}
           className="profile__image"
-          alt="Аватар"
-          style={{ backgroundImage: `url(${currentUser.avatar})` }}
+          alt="Аватар"         
           //src="<%=require('./images/image-profile.jpg')%>"
         />
         <div className="profile__image-edit" onClick={props.onEditAvatar}></div>

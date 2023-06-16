@@ -1,31 +1,33 @@
 import React from "react";
+import { usePopupClose } from "../hooks/usePopupClose";
 
-function PopupWithForm(props) {
+function PopupWithForm({isOpen, onClose, name, title, textButton, onSubmit, children}) {
+  usePopupClose(isOpen, onClose);
   return (
     <div
-      className={`popup popup_type_${props.name} ${
-        props.isOpen ? `popup_opened` : ``
+      className={`popup popup_type_${name} ${
+        isOpen ? `popup_opened` : ``
       }`}
     >
       <div className="popup__content">
-        <h2 className="popup__title">{props.title}</h2>
+        <h2 className="popup__title">{title}</h2>
         <button
-          className={`popup__button-close popup__button-close_${props.name}`}
+          className={`popup__button-close popup__button-close_${name}`}
           type="button"
-          onClick={props.onClose}
-        ></button>
+          onClick={onClose}
+        />
 
         <form
           className="popup__form"
-          name={`${props.name}`}
-          id={`form-${props.name}`}
-          onSubmit={props.onSubmit}
+          name={`${name}`}
+          id={`form-${name}`}
+          onSubmit={onSubmit}
           //noValidate
         >
-          {props.children}
+          {children}
 
           <button className="popup__button-save" type="submit">
-            {props.textButton}
+            {textButton}
           </button>
         </form>
       </div>

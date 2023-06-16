@@ -32,7 +32,9 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState("");
   const [message, setMessage] = useState("");
-  const [statusImage, setStatusImage] = useState();
+  const [statusImage, setStatusImage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleLogin = ({ email, password }) => {
@@ -54,7 +56,7 @@ function App() {
     auth
       .register(email, password)
       .then(() => {
-        setMessage("Вы успешно зарегестрировались!");
+        setMessage("Вы успешно зарегистрировались!");
         setStatusImage(true);
         navigate("/sign-in");
       })
@@ -72,7 +74,7 @@ function App() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
       auth
-        .getContent(jwt)
+        .checkToken(jwt)
         .then((res) => {
           setUserData(res.data);
           setLoggedIn(true);
@@ -133,10 +135,10 @@ function App() {
     setSelectedCard(card);
   }
 
- // function handleDeletePopupClick(card) {
- //   setIsConfirmDeletePopupOpen(!isConfirmDeletePopupOpen);
- //   setSelectedCard(card);
- // }
+  // function handleDeletePopupClick(card) {
+  //   setIsConfirmDeletePopupOpen(!isConfirmDeletePopupOpen);
+  //   setSelectedCard(card);
+  // }
 
   function handleInfoTooltip() {
     setIsTooltipPopupOpen(!isTooltipPopupOpen);
@@ -148,7 +150,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsConfirmDeletePopupOpen(false);
     setIsTooltipPopupOpen(false);
-    setSelectedCard({});    
+    setSelectedCard({});
   }
 
   function handleCardLike(card) {
@@ -178,6 +180,7 @@ function App() {
   }
 
   function handleUpdateUser(data) {
+    setIsLoading(true);
     api
       .changeUserInfo(data)
       .then((userData) => {
@@ -186,10 +189,14 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
   function handleUpdateAvatar(data) {
+    setIsLoading(true);
     api
       .changeUserAvatar(data)
       .then((userData) => {
@@ -198,10 +205,14 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
   function handleAddPlaceSubmit(item) {
+    setIsLoading(true);
     api
       .addCardsOut(item)
       .then((newCard) => {
@@ -210,6 +221,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
@@ -262,18 +276,21 @@ function App() {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
-        ></EditProfilePopup>
+          isLoading={isLoading}
+        />
 
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
+          isLoading={isLoading}
         />
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isLoading={isLoading}
         />
 
         <InfoTooltip
@@ -282,12 +299,14 @@ function App() {
           statusImage={statusImage}
           onClose={closeAllPopups}
           onInfoStatus={handleInfoTooltip}
+          isLoading={isLoading}
         ></InfoTooltip>
 
         <ConfirmDeletePopup
           isOpen={isConfirmDeletePopupOpen}
           onClose={closeAllPopups}
-          //onConfirm={handleCardDelete}          
+          isLoading={isLoading}
+          //onConfirm={handleCardDelete}
         />
 
         <ImagePopup onClose={closeAllPopups} card={selectedCard} />

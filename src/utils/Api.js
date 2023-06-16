@@ -11,37 +11,41 @@ class Api {
     return Promise.reject(`Ошибка ${res.status}`);
   };
 
+  _request = (endpoint, options) => {
+    return fetch(`${this._url}${endpoint}`, options).then(this._handleResponse);
+  };
+
   getUserCards() {
-    return fetch(`${this._url}/cards`, {
+    return this._request(`/cards`, {
       method: "GET",
       headers: this._headers,
-    }).then(this._handleResponse);
+    });
   }
 
   getCurrentUser() {
-    return fetch(`${this._url}/users/me`, {
+    return this._request(`/users/me`, {
       method: "GET",
       headers: this._headers,
-    }).then(this._handleResponse);
+    });
   }
 
   addCardsOut(item) {
-    return fetch(`${this._url}/cards`, {
+    return this._request(`/cards`, {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify(item),
-    }).then(this._handleResponse);
+    });
   }
 
   deleteCard(cardId) {
-    return fetch(`${this._url}/cards/${cardId}`, {
+    return this._request(`/cards/${cardId}`, {
       method: "DELETE",
       headers: this._headers,
-    }).then(this._handleResponse);
+    });
   }
 
   changeUserInfo({ name, about }) {
-    return fetch(`${this._url}/users/me`, {
+    return this._request(`/users/me`, {
       method: "PATCH",
       headers: this._headers,
 
@@ -49,29 +53,29 @@ class Api {
         name: name,
         about: about,
       }),
-    }).then(this._handleResponse);
+    });
   }
 
   changeUserAvatar({ avatar }) {
-    return fetch(`${this._url}/users/me/avatar`, {
+    return this._request(`/users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,
       body: JSON.stringify({ avatar: avatar }),
-    }).then(this._handleResponse);
+    });
   }
 
   setCardLike(cardId) {
-    return fetch(`${this._url}/cards/likes/${cardId}`, {
+    return this._request(`/cards/likes/${cardId}`, {
       method: "PUT",
       headers: this._headers,
-    }).then(this._handleResponse);
+    });
   }
 
   deleteCardLike(cardId) {
-    return fetch(`${this._url}/cards/likes/${cardId}`, {
+    return this._request(`/cards/likes/${cardId}`, {
       method: "DELETE",
       headers: this._headers,
-    }).then(this._handleResponse);
+    });
   }
 
   changeLikeCardStatus(id, isLiked) {
